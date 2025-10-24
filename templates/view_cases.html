@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>All Cases</h3>
+<table class="table table-striped">
+  <thead><tr><th>Case No</th><th>Client</th><th>Lawyer</th><th>Status</th><th>Fees Pending</th><th></th></tr></thead>
+  <tbody>
+    {% for c in cases %}
+    <tr>
+      <td>{{ c.case_number }}</td>
+      <td>{{ c.client_name }}</td>
+      <td>{{ c.lawyer_name }}</td>
+      <td>{{ c.status }}</td>
+      <td>{{ "%.2f"|format(c.fees_pending or 0) }}</td>
+      <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('case_details', case_id=c.id) }}">Details</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No cases yet</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Add Hearing – Case {{ case.case_number }}</h3>
+<form method="post">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <label>Hearing Date</label>
+      <input class="form-control" type="date" name="hearing_date" required>
+    </div>
+    <div class="col-md-4">
+      <label>Stage / Topic</label>
+      <input class="form-control" name="stage" placeholder="e.g., Argument, Evidence">
+    </div>
+    <div class="col-md-4">
+      <label>Next Hearing Date</label>
+      <input class="form-control" type="date" name="next_hearing_date">
+    </div>
+    <div class="col-md-12">
+      <label>Hearing Notes</label>
+      <textarea class="form-control" name="notes" rows="3"></textarea>
+    </div>
+    <div class="col-md-4">
+      <label>Updated Case Status</label>
+      <select class="form-select" name="updated_status">
+        <option value="">(No Change)</option>
+        <option>Filed</option>
+        <option>In Progress</option>
+        <option>Hearing</option>
+        <option>Judgment</option>
+        <option>Closed</option>
+      </select>
+    </div>
+    <div class="col-12 mt-3">
+      <button class="btn btn-primary">Save Hearing</button>
+      <a class="btn btn-secondary" href="{{ url_for('case_details', case_id=case.id) }}">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

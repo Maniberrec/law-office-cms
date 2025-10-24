@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  table td, table th { font-size: 0.9rem; vertical-align: middle; }
+  table a { text-decoration: none; }
+  form input, form select { font-size: 0.9rem; }
+</style>
+
+<h3>Dashboard</h3>
+<div class="row mb-3">
+  <div class="col-md-3">
+    <div class="card p-3 text-center">
+      <h6>Total Cases</h6>
+      <h4>{{ total_cases }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3 text-center">
+      <h6>Active</h6>
+      <h4>{{ active_cases }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3 text-center">
+      <h6>Closed</h6>
+      <h4>{{ closed_cases }}</h4>
+    </div>
+  </div>
+</div>
+
+<h5 class="mt-4">🗂️ Recent Cases</h5>
+
+<!-- 🔍 Search and Filter -->
+<form method="get" action="{{ url_for('index') }}" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <input type="text" name="search" class="form-control" placeholder="Search by Case No, Client, or Lawyer"
+           value="{{ search_query }}">
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="status">
+      <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All Status</option>
+      {% for s in ['Filed', 'In Progress', 'Hearing', 'Judgment', 'Closed'] %}
+      <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Filter</button>
+  </div>
+  <div class="col-md-2">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary w-100">Reset</a>
+  </div>
+</form>
+
+<!-- 🧾 Cases Table -->
+<table class="table table-sm table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Case No</th>
+      <th>Client Name</th>
+      <th>Mobile</th>
+      <th>Location</th>
+      <th>Lawyer</th>
+      <th>Description</th>
+      <th>Court Name</th>
+      <th>Police Station</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in recent_cases %}
+    <tr>
+      <td><a href="{{ url_for('case_details', case_id=c.id) }}">{{ c.case_number }}</a></td>
+      <td>{{ c.client_name }}</td>
+      <td>{{ c.client_mobile or '-' }}</td>
+      <td>{{ c.location or '-' }}</td>
+      <td>{{ c.lawyer_name or '-' }}</td>
+      <td>{{ c.description[:40] }}{% if c.description and c.description|length > 40 %}...{% endif %}</td>
+      <td>{{ c.court_name or '-' }}</td>
+      <td>{{ c.police_station or '-' }}</td>
+      <td>{{ c.status or '-' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="9" class="text-center">No matching cases found</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h5 class="mt-4">⚖️ Upcoming Hearings (Next 10)</h5>
+<table class="table table-sm table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Case No</th>
+      <th>Client Name</th>
+      <th>Hearing Date</th>
+      <th>Stage</th>
+      <th>Next Hearing</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for h in upcoming_hearings %}
+    <tr>
+      <td><a href="{{ url_for('case_details', case_id=h.case_id) }}">{{ h.case.case_number }}</a></td>
+      <td>{{ h.case.client_name }}</td>
+      <td>{{ h.hearing_date | format_date}}</td>
+      <td>{{ h.stage }}</td>
+      <td>{{ h.next_hearing_date| format_date or '-' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center">No upcoming hearings</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+

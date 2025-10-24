@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>📧 Notification History for Case {{ case.case_number }}</h3>
+
+<table class="table table-bordered table-sm mt-3">
+  <thead class="table-light">
+    <tr>
+      <th>Date Sent</th>
+      <th>To</th>
+      <th>Subject</th>
+      <th>Body Preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for n in notes %}
+    <tr>
+      <td>{{ n.sent_at | format_date }}</td>
+      <td>{{ n.email_to }}</td>
+      <td>{{ n.subject }}</td>
+      <td>{{ n.body[:80] }}{% if n.body|length > 80 %}...{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center">No notifications yet</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('case_details', case_id=case.id) }}" class="btn btn-secondary">⬅ Back to Case</a>
+{% endblock %}

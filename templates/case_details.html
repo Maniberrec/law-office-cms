@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Case: {{ case.case_number }}</h3>
+<div class="row">
+  <!-- Left side: Case information -->
+  <div class="col-md-6">
+    <p><strong>Client:</strong> {{ case.client_name }} ({{ case.client_email }})</p>
+    <p><strong>Lawyer:</strong> {{ case.lawyer_name }}</p>
+    <p><strong>Status:</strong> {{ case.status }}</p>
+    <p><strong>Fees Pending:</strong> {{ "%.2f"|format(case.fees_pending or 0) }}</p>
+    <p><strong>Description:</strong> {{ case.description }}</p>
+
+    <form method="post" action="{{ url_for('delete_case', case_id=case.id) }}" onsubmit="return confirm('Delete this case?');">
+      <a class="btn btn-warning" href="{{ url_for('edit_case', case_id=case.id) }}">Edit Case</a>
+      <button class="btn btn-danger">Delete Case</button>
+    </form>
+
+    <a class="btn btn-outline-info btn-sm ms-2"
+       href="{{ url_for('case_notifications', case_id=case.id) }}">
+       View Email History
+    </a>
+  </div>
+
+  <!-- Right side: Hearings -->
+  <div class="col-md-6">
+    <h5>Hearings</h5>
+    <a class="btn btn-sm btn-outline-success mb-2" href="{{ url_for('add_hearing', case_id=case.id) }}">Add Hearing</a>
+
+    <table class="table table-bordered table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Stage</th>
+          <th>Notes</th>
+          <th>Next Hearing</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in hearings %}
+        <tr>
+          <td>{{ h.hearing_date | format_date or '-' }}</td>
+          <td>{{ h.stage or '-' }}</td>
+          <td>{{ h.notes or '-' }}</td>
+          <td>{{ h.next_hearing_date | format_date or '-' }}</td>
+          <td>{{ h.updated_status or '-' }}</td>
+          <td>
+            <a href="{{ url_for('edit_hearing', hearing_id=h.id) }}" class="btn btn-sm btn-warning">Edit</a>
+            <form method="post" action="{{ url_for('delete_hearing', hearing_id=h.id) }}" style="display:inline;" onsubmit="return confirm('Delete this hearing?');">
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center">No hearings recorded</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+

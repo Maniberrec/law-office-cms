@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Edit Hearing – Case {{ case.case_number }}</h3>
+<form method="post">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <label>Hearing Date</label>
+      <input class="form-control" type="date" name="hearing_date" value="{{ hearing.hearing_date }}" required>
+    </div>
+    <div class="col-md-4">
+      <label>Stage / Topic</label>
+      <input class="form-control" name="stage" value="{{ hearing.stage }}">
+    </div>
+    <div class="col-md-4">
+      <label>Next Hearing Date</label>
+      <input class="form-control" type="date" name="next_hearing_date" value="{{ hearing.next_hearing_date }}">
+    </div>
+    <div class="col-md-12">
+      <label>Hearing Notes</label>
+      <textarea class="form-control" name="notes" rows="3">{{ hearing.notes }}</textarea>
+    </div>
+    <div class="col-md-4">
+      <label>Updated Case Status</label>
+      <select class="form-select" name="updated_status">
+        <option value="">(No Change)</option>
+        {% for s in ['Filed','In Progress','Hearing','Judgment','Closed'] %}
+        <option value="{{ s }}" {% if hearing.updated_status == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12 mt-3">
+      <button class="btn btn-primary">Update Hearing</button>
+      <a class="btn btn-secondary" href="{{ url_for('case_details', case_id=case.id) }}">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}
