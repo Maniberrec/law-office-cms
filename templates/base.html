@@ -2,18 +2,21 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Law Office Case Management</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
-  <div class="container">
-    <a class="navbar-brand" href="{{ url_for('index') }}">Law Office</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav me-auto">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Law Office CMS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('view_cases') }}">Cases</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_case') }}">Add Case</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_case') }}">New Case</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ url_for('settings') }}">Settings</a></li>
       </ul>
     </div>
@@ -29,6 +32,14 @@
   {% endwith %}
   {% block content %}{% endblock %}
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+  body { font-size: 0.9rem; }
+  .table td, .table th { white-space: nowrap; }
+  @media (max-width: 768px) {
+    h3 { font-size: 1.2rem; }
+    .btn { font-size: 0.8rem; padding: 0.4rem 0.6rem; }
+  }
+</style>  
 </body>
 </html>

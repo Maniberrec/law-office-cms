@@ -508,6 +508,50 @@ def case_notifications(case_id):
     case = Case.query.get_or_404(case_id)
     notes = Notification.query.filter_by(case_id=case_id).order_by(Notification.sent_at.desc()).all()
     return render_template('notifications.html', case=case, notes=notes)
+from openpyxl import Workbook
+from io import BytesIO
+from flask import send_file
+
+@app.route('/notification/<int:note_id>/resend')
+def resend_notification(note_id):
+    note = Notification.query.get_or_404(note_id)
+    case = note.case
+    try:
+        # Reuse our existing email sender
+        send_client_email(case, note.subject, note.body)
+        flash(f"Email re-sent to {note.email_to}", "success")
+    except Exception as e:
+        flash(f"Error re-sending email: {e}", "danger")
+    return redirect(url_for('case_notifications', case_id=case.id))
+
+@app.route('/case/<int:case_id>/notifications/export')
+def export_notifications(case_id):
+    case = Case.query.get_or_404(case_id)
+    notes = Notification.query.filter_by(case_id=case_id).order_by(Notification.sent_at.desc()).all()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Notifications"
+    ws.append(["Date Sent", "To", "Subject", "Body"])
+    for n in notes:
+        ws.append([
+            n.sent_at.strftime("%d:%m:%Y %H:%M"),
+            n.email_to,
+            n.subject,
+            n.body
+        ])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    filename = f"Case_{case.case_number}_Notifications.xlsx"
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 # -----------------------
 # Run
